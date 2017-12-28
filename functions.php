@@ -44,7 +44,9 @@ if ( ! function_exists( 'humescores_setup' ) ) :
 
 		// This theme uses wp_nav_menu() in one location.
 		register_nav_menus( array(
-			'menu-1' => esc_html__( 'Primary', 'humescores' ),
+			'primary' => esc_html__( 'Primary', 'humescores' ),
+			'secondary' => esc_html__( 'Secondary', 'humescores' ),
+			'social' => esc_html__( 'Social Menu', 'humescores' ),
 		) );
 
 		/*
@@ -74,7 +76,7 @@ if ( ! function_exists( 'humescores_setup' ) ) :
 		 * @link https://codex.wordpress.org/Theme_Logo
 		 */
 		add_theme_support( 'custom-logo', array(
-			'height'      => 250,
+			'height'      => 100,
 			'width'       => 250,
 			'flex-width'  => true,
 			'flex-height' => true,
@@ -82,6 +84,64 @@ if ( ! function_exists( 'humescores_setup' ) ) :
 	}
 endif;
 add_action( 'after_setup_theme', 'humescores_setup' );
+
+/**
+ * Register custom fonts.
+ */
+function humescores_fonts_url() {
+	$fonts_url = '';
+
+	/*
+	 * Translators: If there are characters in your language that are not
+	 * supported by Merriweather for heading and Lato for content, translate this to 'off'. Do not translate
+	 * into your own language.
+	 */
+	$merriweather = _x( 'on', 'Merriweather font: on or off', 'humescores' );
+	$lato = _x( 'on', 'Lato font: on or off', 'humescores' );
+
+	$font_families = array();
+
+	if ( 'off' !== $merriweather ) {
+		$font_families[] = 'Merriweather:400,700';
+	}
+
+	if ( 'off' !== $lato ) {
+		$font_families[] = 'Lato:300,400';
+	}
+
+	if ( in_array('on', array( $merriweather, $lato )) ) {
+
+		$query_args = array(
+			'family' => urlencode( implode( '|', $font_families ) ),
+			'subset' => urlencode( 'cyrillic-ext,latin-ext' ),
+		);
+
+		$fonts_url = add_query_arg( $query_args, 'https://fonts.googleapis.com/css' );
+	}
+
+	return esc_url_raw( $fonts_url );
+}
+
+/**
+ * Add preconnect for Google Fonts.
+ *
+ * @since Twenty Seventeen 1.0
+ *
+ * @param array  $urls           URLs to print for resource hints.
+ * @param string $relation_type  The relation type the URLs are printed.
+ * @return array $urls           URLs to print for resource hints.
+ */
+function humescores_resource_hints( $urls, $relation_type ) {
+	if ( wp_style_is( 'humescores-fonts', 'queue' ) && 'preconnect' === $relation_type ) {
+		$urls[] = array(
+			'href' => 'https://fonts.gstatic.com',
+			'crossorigin',
+		);
+	}
+
+	return $urls;
+}
+add_filter( 'wp_resource_hints', 'humescores_resource_hints', 10, 2 );
 
 /**
  * Set the content width in pixels, based on the theme's design and stylesheet.
@@ -117,9 +177,16 @@ add_action( 'widgets_init', 'humescores_widgets_init' );
  * Enqueue scripts and styles.
  */
 function humescores_scripts() {
+	//Custom fonts
+	wp_enqueue_style( 'humescores-fonts', humescores_fonts_url() );
+
 	wp_enqueue_style( 'humescores-style', get_stylesheet_uri() );
 
-	wp_enqueue_script( 'humescores-navigation', get_template_directory_uri() . '/js/navigation.js', array(), '20151215', true );
+	wp_enqueue_script( 'humescores-navigation', get_template_directory_uri() . '/js/navigation.js', array('jquery'), '20151215', true );
+	wp_localize_script( 'humescores-navigation', 'humescoresScreenReaderText', array(
+		'expand' => __( 'Expand child menu', 'humescores'),
+		'collapse' => __( 'Collapse child menu', 'humescores'),
+	));
 
 	wp_enqueue_script( 'humescores-skip-link-focus-fix', get_template_directory_uri() . '/js/skip-link-focus-fix.js', array(), '20151215', true );
 

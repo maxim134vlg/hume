@@ -6,6 +6,65 @@
 	margin: 0 0 1.5em;
 }
 
+.entry-header{
+	font-family: $font__sans;
+}
+
+.cat-links{
+	font-size: 90%;
+	font-weight: 700;
+
+	a{
+		text-decoration:none;
+		text-transform:uppercase;
+	}
+}
+
+.entry-title{
+	text-transform:uppercase;
+	margin: .5em 0 .25em;
+
+	a{
+		color:$entry__title;
+		text-decoration:none;
+
+		&:focus,
+			&:hover{
+				color:$entry__title;
+				border-bottom:2px dashed $entry__title;
+			}
+	}
+}
+
+.entry-meta{
+	font-size:80%;
+
+	a{
+		text-decoration:none;
+		color:$meta__links;
+		font-weight:700;
+
+		&:focus,
+			&:hover{
+				border-bottom:2px dashed $meta__links;
+			}
+	}
+}
+
+.byline{
+	&::after{
+		content: "|";
+		margin: 0 .5em;
+	}
+}
+
+.comments-link,
+.edit-link{
+	&::before
+	{content: "|";
+		margin:0 .5em;}
+}
+
 .updated:not(.published) {
 	display: none;
 }

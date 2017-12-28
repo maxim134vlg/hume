@@ -17,3 +17,19 @@ a {
 		outline: 0;
 	}
 }
+
+.page-content,
+.entry-content,
+.entry-summary,
+.comment-content{
+	a{
+		text-decoration:none;
+		font-size:90%;
+
+		&:focus,
+			&:hover{
+				color:$color__link-hover;
+				border-bottom:2px solid $meta__links;
+			}
+	}
+}

@@ -28,7 +28,7 @@
 	</header><!-- .entry-header -->
 
 	<?php humescores_post_thumbnail(); ?>
-
+	<section class="post-content">
 	<div class="entry-content">
 		<?php
 			the_content( sprintf(
@@ -54,4 +54,18 @@
 	<footer class="entry-footer">
 		<?php humescores_entry_footer(); ?>
 	</footer><!-- .entry-footer -->
+
+	<?php 
+
+		humescores_post_navigation();
+
+		// If comments are open or we have at least one comment, load up the comment template.
+		if ( comments_open() || get_comments_number() ) :
+			comments_template();
+		endif;
+
+	 ?>
+	</section>
+	<?php get_sidebar(); ?>	
+
 </article><!-- #post-<?php the_ID(); ?> -->
